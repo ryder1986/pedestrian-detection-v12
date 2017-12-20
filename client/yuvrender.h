@@ -179,7 +179,7 @@ public:
             p_d->lk.unlock();
 
 
-            this_thread::sleep_for(chrono::milliseconds(45));
+          //  this_thread::sleep_for(chrono::milliseconds(45));
 
         }
     }

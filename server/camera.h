@@ -904,10 +904,10 @@ private:
         {
             data->src_old_frame= data->src_frame;
             data->han_old_frame= data->han_frame;
-            this_thread::sleep_for(chrono::milliseconds(1000));
+            this_thread::sleep_for(chrono::milliseconds(3000));
             int frame_src=data->src_frame- data->src_old_frame;
             int frame_han=data->han_frame- data->han_old_frame;
-      //      prt(info,"get %d frames,process %d frames",frame_src,frame_han);
+            prt(info,"get %d frames,process %d frames  ,now size(%d)",frame_src,frame_han,data->frame_list.size());
             //  if(frame_src==0&&frame_han==0)
 #if 1
             if(frame_src==0&&frame_han==0)
@@ -935,31 +935,26 @@ private:
         Mat *tmp_mat;
         while(!data->quit_flag){
 
-            data->p_lock->lock();
-            //     prt(info," getting");
+            //   data->p_lock->lock();
             tmp_mat=data->p_src->get_frame();
-            //   prt(info," getting done");
+            if(tmp_mat)
+                data->src_frame++;
             if(tmp_mat&&data->frame_list.size()<10){
                 data->frame_list.push_back(*tmp_mat);
-                data->src_frame++;
+            }else{
 
             }
-            else{
-                //   prt(info,"get null frame");
-            }
-            data->p_lock->unlock();
+            //  data->p_lock->unlock();
             this_thread::sleep_for(chrono::milliseconds(data->duration));
-            //    this_thread::sleep_for(chrono::milliseconds(1));
         }
-        prt(info," frame quit");
+        prt(info,"getting frame thread quit");
     }
     static void process_frame(data_t *data)
     {
 
         while(!data->quit_flag){
-            //     prt(info," processing");
-            data->p_lock->lock();
-            if(data->frame_list.size()>0){
+            //  data->p_lock->lock();
+            if(data->frame_list.size()>5){
                 //     prt(info,"size : %d",data->frame_list.size());
                 data->p_handler->set_frame(&(*data->frame_list.begin()));
                 data->p_handler->work();
@@ -969,10 +964,11 @@ private:
             else{
                 //    prt(info,"size : %d",data->frame_list.size());
             }
-            data->p_lock->unlock();
-            this_thread::sleep_for(chrono::milliseconds(data->duration));
+            //   data->p_lock->unlock();
+     //       this_thread::sleep_for(chrono::milliseconds(data->duration));
             //  this_thread::sleep_for(chrono::milliseconds(1));
         }
+          prt(info,"prcessing frame thread quit");
     }
 };
 #ifdef DISPLAY_VIDEO
@@ -1101,14 +1097,14 @@ public:
     void mod_camera(const char *cfg_buf,const int index)
     {
         p_cfg->set_config(cfg_buf);
-//        while(true){
-//            if(0==cameras[index-1]->try_restart(p_cfg->cfg.camera[p_cfg->cfg.camera_amount-1]))
-//                break;
-//            else
-//            {
-//                prt(info,"restarting camera %d",index);
-//            }
-//        }
+        //        while(true){
+        //            if(0==cameras[index-1]->try_restart(p_cfg->cfg.camera[p_cfg->cfg.camera_amount-1]))
+        //                break;
+        //            else
+        //            {
+        //                prt(info,"restarting camera %d",index);
+        //            }
+        //        }
     }
 
 private:
