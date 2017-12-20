@@ -937,13 +937,22 @@ private:
 
             //   data->p_lock->lock();
             tmp_mat=data->p_src->get_frame();
-            if(tmp_mat)
+
+            if(tmp_mat){
                 data->src_frame++;
-            if(tmp_mat&&data->frame_list.size()<10){
-                data->frame_list.push_back(*tmp_mat);
-            }else{
+                if(data->frame_list.size()<10){
+                    data->frame_list.push_back(*tmp_mat);
+                }else{
+                    if(!data->cfg.ip.contains(QString("rtsp"))&&!data->cfg.ip.contains(QString("http")))
+                    {
+                        this_thread::sleep_for(chrono::milliseconds(50));
+                    //    prt(info,"sleep for file");
+                    }
+                }
+
 
             }
+
             //  data->p_lock->unlock();
             this_thread::sleep_for(chrono::milliseconds(data->duration));
         }
@@ -965,10 +974,10 @@ private:
                 //    prt(info,"size : %d",data->frame_list.size());
             }
             //   data->p_lock->unlock();
-     //       this_thread::sleep_for(chrono::milliseconds(data->duration));
+            //       this_thread::sleep_for(chrono::milliseconds(data->duration));
             //  this_thread::sleep_for(chrono::milliseconds(1));
         }
-          prt(info,"prcessing frame thread quit");
+        prt(info,"prcessing frame thread quit");
     }
 };
 #ifdef DISPLAY_VIDEO

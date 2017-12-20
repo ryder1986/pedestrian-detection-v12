@@ -1,4 +1,4 @@
-#include "mainwidget.h"
+﻿#include "mainwidget.h"
 #include "yuvrender.h"
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 {
@@ -8,7 +8,10 @@ MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 //    YuvRender *r=new YuvRender;
 //    r->show();
     //f->widget_pic->setLayout();
-    cam_manager=new ClientCameraManager;
+
+
+    p_cfg=new Config("config.json-client");
+   // cam_manager=new ClientCameraManager;
     client=new Client;
     f->treeWidget_devices->clear();
 }
@@ -25,8 +28,10 @@ void MainWidget::on_pushButton_search_clicked()
     QByteArray rst=client->call_server(buf,request_length);//talk to server
     rst=rst.remove(0,Protocol::HEAD_LENGTH);//TODO:get the ret value
 
-    cam_manager->save_config(rst);
-    p_cfg=cam_manager->get_config(true);
+ //   cam_manager->save_config(rst);
+ //   p_cfg=cam_manager->get_config(true);
+
+    p_cfg->set_ba(rst);
     itm_root=new QTreeWidgetItem(QStringList(client->server_ip));
 
     f->treeWidget_devices->addTopLevelItem(itm_root);
@@ -70,11 +75,14 @@ void MainWidget::del_camera(bool checked)
 playing_index=0;
             }
         }
-        int size=cam_manager->get_size();
+      //  int size=cam_manager->get_size();
+        int size = p_cfg->data.camera_amount;
         if(del_index<=size&&del_index>0)
         {
 
-            cam_manager->del_camera(del_index);// delete camera local
+            //cam_manager->del_camera(del_index);// delete camera local
+           p_cfg->del_camera(del_index);
+
             Protocol::encode_delcam_request(buf,del_index);//encode buffer
             client->call_server(buf,Protocol::HEAD_LENGTH);//talk to server
         }
@@ -89,8 +97,11 @@ void MainWidget::submit_camera(bool checked)
 
 
     QString ip=itm->text((0));
-    cam_manager->add_camera(ip);//add camera on client
-    QByteArray setting=cam_manager->get_config(1);//get new config from local database
+   // cam_manager->add_camera(ip);//add camera on client
+ //   QByteArray setting=cam_manager->get_config(1);//get new config from local database
+    p_cfg->append_camera(ip,123);
+    QByteArray setting=p_cfg->get_ba();//get new config from local database
+
     int len=Protocol::encode_addcam_request(buf,setting.length());//encode buffer
     memcpy(buf+Protocol::HEAD_LENGTH,setting.data(),setting.length());
     QByteArray rst=client->call_server(buf,len);//talk to server

@@ -177,9 +177,14 @@ public:
             }
 
             p_d->lk.unlock();
+            QString ss=p_d->r->get_url();
+            if(!ss.contains(QString("rtsp"))&&!ss.contains(QString("http")))
+            {
 
+                this_thread::sleep_for(chrono::milliseconds(50));
+               // prt(info,"sleep for file");
+            }
 
-          //  this_thread::sleep_for(chrono::milliseconds(45));
 
         }
     }

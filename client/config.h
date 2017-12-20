@@ -1,4 +1,4 @@
-#ifndef CONFIG_H
+﻿#ifndef CONFIG_H
 #define CONFIG_H
 
 #include <QObject>
@@ -193,7 +193,8 @@ public:
         //   QByteArray json_data;
         // set_data();
         // json_data=json_doc.toJson();
-        f->write(encode_to_json());
+        int write_n=f->write(encode_to_json());
+        prt(info,"wirte %d",write_n);
         f->close();
     }
 

@@ -10,3 +10,4 @@ CONFIG+=c++11
 TARGET = pedestrian-test
 #message($$absolute_path())
 #message($$DESTDIR)
+Qt +=core
