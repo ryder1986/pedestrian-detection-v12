@@ -20,7 +20,24 @@ head_install_setting.path=$$COMMON_INCLUDE_PATH
 head_install_setting.files=tools.h
 #  head_install_setting.commands=echo F | xcopy "$$absolute_path()/tools.h" $$COMMON_INCLUDE_PATH
 lib_install_setting.path=$$COMMON_LIB_PATH
-lib_install_setting.files=libtools.a
+
+win32{
+    release{
+    lib_install_setting.files=$$PROJECT_ROOT/build/win32/realse/tools.lib
+    }
+    debug{
+    lib_install_setting.files=$$PROJECT_ROOT/build/win32/debug/tools.lib
+    }
+}
+unix{
+    release{
+    lib_install_setting.files=$$PROJECT_ROOT/build/linux32/release/libtools.a
+    }
+    debug{
+    lib_install_setting.files=$$PROJECT_ROOT/build/linux32/debug/libtools.a
+    }
+}
+message($$PWD)
 # lib_install_setting.commands=echo F | xcopy $$DESTDIR\tools.lib  $$COMMON_LIB_PATH
 INSTALLS +=head_install_setting
 INSTALLS +=lib_install_setting
