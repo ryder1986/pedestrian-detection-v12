@@ -2,7 +2,6 @@ include(../pedestrian.pri)
 #message($$CVPATH) # execute 3 times
 
 HEADERS+=\
-    tools.h \
     camera.h \
     server.h
 SOURCES+=main.cpp  \
